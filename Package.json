@@ -1,0 +1,14 @@
+{
+    "name": "ldap-auth-gateway",
+    "description": "Simple authentication gateway proof of concept.",
+    "author": "Robert Christian <robertjchristian@gmail.com>",
+    "dependencies": {
+        "express": "3.3.x",
+        "http-proxy": "0.10.x",
+        "ldapjs": "0.6.x"
+    },
+    "devDependencies": {
+        "vows": "0.5.x"
+    },
+    "engine": "node >= 0.10.0"
+}
