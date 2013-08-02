@@ -17,7 +17,7 @@ nodejs/npm
 Attempt to access target via gateway, no token, no basic auth
 </h3>
 
-<img href="http://www.websequencediagrams.com/cgi-bin/cdraw?lz=dGl0bGUgYXR0ZW1wdCB0byByZWFjaCB0YXJnZXQgbm8gYXV0aCBoZWFkZXIKY2xpZW50LT5nYXRld2F5OiAgZ2V0L3Bvc3QKAAwHABELdG9rZW4_IChubykAFAphdXRoOgBPBQphdXRoAAkIcGFyc2UgYmFzaWMAZQwgKG5vAHUHKQApBwByCWZhaWwAQwYAcgkAgRkGAA8MCgoKCg&s=napkin" /
+<img src="http://www.websequencediagrams.com/cgi-bin/cdraw?lz=dGl0bGUgYXR0ZW1wdCB0byByZWFjaCB0YXJnZXQgbm8gYXV0aCBoZWFkZXIKY2xpZW50LT5nYXRld2F5OiAgZ2V0L3Bvc3QKAAwHABELdG9rZW4_IChubykAFAphdXRoOgBPBQphdXRoAAkIcGFyc2UgYmFzaWMAZQwgKG5vAHUHKQApBwByCWZhaWwAQwYAcgkAgRkGAA8MCgoKCg&s=napkin" />
 
 title attempt to reach target no auth header
 client->gateway:  get/post
@@ -31,7 +31,7 @@ gateway->client: fail auth
 attempt to access target via gateway - no token, basic auth (invalid creds)
 </h3>
 
-<img href="http://www.websequencediagrams.com/cgi-bin/cdraw?lz=dGl0bGUgYXR0ZW1wdCB0byByZWFjaCB0YXJnZXQsIGF1dGggaGVhZGVyIChpbnZhbGlkKQpjbGllbnQtPmdhdGV3YXk6ICBnZXQvcG9zdAoADAcAEQt0b2tlbj8gKG5vKQAUCmF1dGg6AFkFCmF1dGgACQhwYXJzZSBiYXNpYwBtDm9rYXkpACQHbGRhcAA2BiB2aWEgbGRhcCAoYmluZCkKbGRhcAAZCHNlcnZlci5iaW5kKGNyZWRzABcIAHYGZmFpbAB1BwCBPglmYWlsAIEPBgCBPgkAgWUGAA8MCgoK&s=napkin" />
+<img src="http://www.websequencediagrams.com/cgi-bin/cdraw?lz=dGl0bGUgYXR0ZW1wdCB0byByZWFjaCB0YXJnZXQsIGF1dGggaGVhZGVyIChpbnZhbGlkKQpjbGllbnQtPmdhdGV3YXk6ICBnZXQvcG9zdAoADAcAEQt0b2tlbj8gKG5vKQAUCmF1dGg6AFkFCmF1dGgACQhwYXJzZSBiYXNpYwBtDm9rYXkpACQHbGRhcAA2BiB2aWEgbGRhcCAoYmluZCkKbGRhcAAZCHNlcnZlci5iaW5kKGNyZWRzABcIAHYGZmFpbAB1BwCBPglmYWlsAIEPBgCBPgkAgWUGAA8MCgoK&s=napkin" />
 
 title attempt to reach target, auth header (invalid)
 client->gateway:  get/post
@@ -48,7 +48,7 @@ gateway->client: fail auth
 attempt to access target via gateway, valid creds
 </h3>
 
-<img href="http://www.websequencediagrams.com/cgi-bin/cdraw?lz=dGl0bGUgYXR0ZW1wdCB0byByZWFjaCB0YXJnZXQsIGF1dGggaGVhZGVyICh2YWxpZCkKY2xpZW50LT5nYXRld2F5OiAgZ2V0L3Bvc3QKAAwHABELdG9rZW4_IChubykAFAphdXRoOgBXBQphdXRoAAkIcGFyc2UgYmFzaWMAaw5va2F5KQAkB2xkYXAANgYgdmlhIGxkYXAgKGJpbmQpCmxkYXAAGQhzZXJ2ZXIuYmluZChjcmVkcwAXCAB2BnN1Y2NlZWQAeAcAgUEJAIFqBQAXBXNzIQCBRAoAgWwGABEOLCBzZXQAgVkGIChjb29raWUp&s=napkin" />
+<img src="http://www.websequencediagrams.com/cgi-bin/cdraw?lz=dGl0bGUgYXR0ZW1wdCB0byByZWFjaCB0YXJnZXQsIGF1dGggaGVhZGVyICh2YWxpZCkKY2xpZW50LT5nYXRld2F5OiAgZ2V0L3Bvc3QKAAwHABELdG9rZW4_IChubykAFAphdXRoOgBXBQphdXRoAAkIcGFyc2UgYmFzaWMAaw5va2F5KQAkB2xkYXAANgYgdmlhIGxkYXAgKGJpbmQpCmxkYXAAGQhzZXJ2ZXIuYmluZChjcmVkcwAXCAB2BnN1Y2NlZWQAeAcAgUEJAIFqBQAXBXNzIQCBRAoAgWwGABEOLCBzZXQAgVkGIChjb29raWUp&s=napkin" />
 
 title attempt to reach target, auth header (valid)
 client->gateway:  get/post
@@ -65,7 +65,7 @@ gateway->client: auth success, set token (cookie)
 attempt to access target via gateway, valid token
 </h3>
 
-<img href="http://www.websequencediagrams.com/cgi-bin/cdraw?lz=dGl0bGUgYXR0ZW1wdCB0byByZWFjaCB0YXJnZXQsICh2YWxpZCB0b2tlbikKY2xpZW50LT5nYXRld2F5OiAgZ2V0L3Bvc3QKAAwHABELAC8FPyAoeWVzISkAFgoAVAY6IHByb3h5IHJlcXVlc3QKAGoGABQKZWNobyByZXNwb25zZQAVCQBvCQA1CAAZBwB0CQCBGwY6AIE4BydzADoJ&s=napkin" />
+<img src="http://www.websequencediagrams.com/cgi-bin/cdraw?lz=dGl0bGUgYXR0ZW1wdCB0byByZWFjaCB0YXJnZXQsICh2YWxpZCB0b2tlbikKY2xpZW50LT5nYXRld2F5OiAgZ2V0L3Bvc3QKAAwHABELAC8FPyAoeWVzISkAFgoAVAY6IHByb3h5IHJlcXVlc3QKAGoGABQKZWNobyByZXNwb25zZQAVCQBvCQA1CAAZBwB0CQCBGwY6AIE4BydzADoJ&s=napkin" />
 
 title attempt to reach target, (valid token)
 client->gateway:  get/post
