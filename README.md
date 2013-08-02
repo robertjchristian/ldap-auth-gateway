@@ -1,9 +1,13 @@
 <h1>ldap-auth-gateway</h1>
 
+<h2>about</h2>
+
+Provides a gateway pattern for centralizing the authorization and session management of incoming HTTP requests through a reverse proxy.  Authorization mechanism could be made pluggable since it is facaded by an auth service, but in the default implementation, I'm using a nodejs-based LDAP server (ldapjs).
+
 <h2>dependencies</h2>
 nodejs/npm
 
-<h2>usage</h2>
+<h2>installation and startup</h2>
 
 <ul>
 <li>install dependencies with "npm install"</li>
@@ -74,3 +78,29 @@ attempt to access target via gateway, valid token
 * target->target: echo response
 * target->gateway: proxy response
 * gateway->client: target's response
+
+<h2>Example usage<h2>
+
+<i>TODO:  Elaborate exampleusage with better documentation, and the below script actually won't work... make host configurable and change Basic auth to use "root"/"secret" as that's the only cred that will work out of the box.</i>
+
+<h5>Examples - test.sh</h5>
+<pre>
+#!/bin/bash
+
+while true
+  do
+
+  printf "\n\nRequest target through proxy with valid session...\n"
+  curl -X POST -d "foofoofoo" --header "Cookie:  token=12345678" host:8000
+
+  printf "\n\nRequest target through proxy with invalid auth credentials...\n"
+  curl --header "Authorization:  Basic cm9iOnJvYg==" host:8000
+
+  printf "\n\nRequest target through proxy with invalid auth credentials...\n"
+  curl --header "Authorization:  Basic fail" host:8000
+
+  exit
+done  
+
+</pre>
+
