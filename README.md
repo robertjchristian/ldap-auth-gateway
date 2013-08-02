@@ -1,5 +1,16 @@
 <h1>ldap-auth-gateway</h1>
 
+<h2>dependencies</h2>
+nodejs/npm
+
+<h2>usage</h2>
+
+<ul>
+<li>install dependencies with "npm install"</li>
+<li>start ldap server with "node ldap.js"</li>
+<li>in a separate terminal/process, start app with "node app.js"</li>
+</ul>
+
 <h2>working use cases</h2>
 
 <h3>
