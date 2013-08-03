@@ -18,7 +18,7 @@ var server = ldap.createServer();
 // authentication
 server.bind('cn=root', function(req, res, next) {
 
-    console.log('User ' + req.dn.toString() + ', Password ' + req.credentials);
+    //console.log('User ' + req.dn.toString() + ', Password ' + req.credentials);
 
     // one user, root/secret
     if (req.dn.toString() !== 'cn=root' || req.credentials !== 'secret') {
