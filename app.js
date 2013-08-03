@@ -8,7 +8,7 @@ var numAuthRequests = 0;
 var numProxyRequests = 0;
 var numTargetRequests = 0;
 
-// utility methods
+// utility functions
 
 var start = process.hrtime();
 
@@ -98,7 +98,7 @@ server.listen(8000);
 
 
 //
-// Dummy authentication server on port 9001
+// Authentication server on port 9001
 //
 http.createServer(function (req, res) {
   
