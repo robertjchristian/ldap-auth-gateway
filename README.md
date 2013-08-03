@@ -9,13 +9,22 @@ Provides a gateway pattern for centralizing the authorization and session manage
 <h2>dependencies</h2>
 nodejs/npm
 
-<h2>installation and startup</h2>
+<h2>installation</h2>
 
-<ul>
-<li>install dependencies with "npm install"</li>
-<li>start ldap server with "node ldap.js"</li>
-<li>in a separate terminal/process, start app with "node app.js"</li>
-</ul>
+install:
+<pre>
+➜  ldap-auth-gateway git:(master) npm install
+</pre>
+
+start ldap:
+<pre>
+➜  ldap-auth-gateway git:(master) node ldap.js
+</pre>
+
+start remaining services:
+<pre>
+➜  ldap-auth-gateway git:(master) node app.js
+</pre>
 
 <h2>working use cases</h2>
 
@@ -25,13 +34,15 @@ Attempt to access target via gateway, no token, no basic auth
 
 <img src="http://www.websequencediagrams.com/cgi-bin/cdraw?lz=dGl0bGUgYXR0ZW1wdCB0byByZWFjaCB0YXJnZXQgbm8gYXV0aCBoZWFkZXIKY2xpZW50LT5nYXRld2F5OiAgZ2V0L3Bvc3QKAAwHABELdG9rZW4_IChubykAFAphdXRoOgBPBQphdXRoAAkIcGFyc2UgYmFzaWMAZQwgKG5vAHUHKQApBwByCWZhaWwAQwYAcgkAgRkGAA8MCgoKCg&s=napkin" />
 
-* title attempt to reach target no auth header
-* client->gateway:  get/post
-* gateway->gateway: token? (no)
-* gateway->auth: auth
-* auth->auth: parse basic auth header (no header)
-* auth->gateway: fail auth
-* gateway->client: fail auth
+<pre>
+title attempt to reach target no auth header
+client->gateway:  get/post
+gateway->gateway: token? (no)
+gateway->auth: auth
+auth->auth: parse basic auth header (no header)
+auth->gateway: fail auth
+gateway->client: fail auth
+</pre>
 
 <h3>
 attempt to access target via gateway - no token, basic auth (invalid creds)
@@ -39,16 +50,18 @@ attempt to access target via gateway - no token, basic auth (invalid creds)
 
 <img src="http://www.websequencediagrams.com/cgi-bin/cdraw?lz=dGl0bGUgYXR0ZW1wdCB0byByZWFjaCB0YXJnZXQsIGF1dGggaGVhZGVyIChpbnZhbGlkKQpjbGllbnQtPmdhdGV3YXk6ICBnZXQvcG9zdAoADAcAEQt0b2tlbj8gKG5vKQAUCmF1dGg6AFkFCmF1dGgACQhwYXJzZSBiYXNpYwBtDm9rYXkpACQHbGRhcAA2BiB2aWEgbGRhcCAoYmluZCkKbGRhcAAZCHNlcnZlci5iaW5kKGNyZWRzABcIAHYGZmFpbAB1BwCBPglmYWlsAIEPBgCBPgkAgWUGAA8MCgoK&s=napkin" />
 
-* title attempt to reach target, auth header (invalid)
-* client->gateway:  get/post
-* gateway->gateway: token? (no)
-* gateway->auth: auth
-* auth->auth: parse basic auth header (okay)
-* auth->ldap: auth via ldap (bind)
-* ldap->ldap: server.bind(creds)
-* ldap->auth: fail
-* auth->gateway: fail auth
-* gateway->client: fail auth
+<pre>
+title attempt to reach target, auth header (invalid)
+client->gateway:  get/post
+gateway->gateway: token? (no)
+gateway->auth: auth
+auth->auth: parse basic auth header (okay)
+auth->ldap: auth via ldap (bind)
+ldap->ldap: server.bind(creds)
+ldap->auth: fail
+auth->gateway: fail auth
+gateway->client: fail auth
+</pre>
 
 <h3>
 attempt to access target via gateway, valid creds
@@ -56,16 +69,18 @@ attempt to access target via gateway, valid creds
 
 <img src="http://www.websequencediagrams.com/cgi-bin/cdraw?lz=dGl0bGUgYXR0ZW1wdCB0byByZWFjaCB0YXJnZXQsIGF1dGggaGVhZGVyICh2YWxpZCkKY2xpZW50LT5nYXRld2F5OiAgZ2V0L3Bvc3QKAAwHABELdG9rZW4_IChubykAFAphdXRoOgBXBQphdXRoAAkIcGFyc2UgYmFzaWMAaw5va2F5KQAkB2xkYXAANgYgdmlhIGxkYXAgKGJpbmQpCmxkYXAAGQhzZXJ2ZXIuYmluZChjcmVkcwAXCAB2BnN1Y2NlZWQAeAcAgUEJAIFqBQAXBXNzIQCBRAoAgWwGABEOLCBzZXQAgVkGIChjb29raWUp&s=napkin" />
 
-* title attempt to reach target, auth header (valid)
-* client->gateway:  get/post
-* gateway->gateway: token? (no)
-* gateway->auth: auth
-* auth->auth: parse basic auth header (okay)
-* auth->ldap: auth via ldap (bind)
-* ldap->ldap: server.bind(creds)
-* ldap->auth: succeed
-* auth->gateway: auth success!
-* gateway->client: auth success, set token (cookie)
+<pre>
+title attempt to reach target, auth header (valid)
+client->gateway:  get/post
+gateway->gateway: token? (no)
+gateway->auth: auth
+auth->auth: parse basic auth header (okay)
+auth->ldap: auth via ldap (bind)
+ldap->ldap: server.bind(creds)
+ldap->auth: succeed
+auth->gateway: auth success!
+gateway->client: auth success, set token (cookie)
+</pre>
 
 <h3>
 attempt to access target via gateway, valid token
@@ -73,13 +88,15 @@ attempt to access target via gateway, valid token
 
 <img src="http://www.websequencediagrams.com/cgi-bin/cdraw?lz=dGl0bGUgYXR0ZW1wdCB0byByZWFjaCB0YXJnZXQsICh2YWxpZCB0b2tlbikKY2xpZW50LT5nYXRld2F5OiAgZ2V0L3Bvc3QKAAwHABELAC8FPyAoeWVzISkAFgoAVAY6IHByb3h5IHJlcXVlc3QKAGoGABQKZWNobyByZXNwb25zZQAVCQBvCQA1CAAZBwB0CQCBGwY6AIE4BydzADoJ&s=napkin" />
 
-* title attempt to reach target, (valid token)
-* client->gateway:  get/post
-* gateway->gateway: token? (yes!)
-* gateway->target: proxy request
-* target->target: echo response
-* target->gateway: proxy response
-* gateway->client: target's response
+<pre>
+title attempt to reach target, (valid token)
+client->gateway:  get/post
+gateway->gateway: token? (yes!)
+gateway->target: proxy request
+target->target: echo response
+target->gateway: proxy response
+gateway->client: target's response
+</pre>
 
 <h2>Example usage<h2>
 
@@ -116,10 +133,12 @@ Echo service: /
   "x-forwarded-proto": "http",
   "connection": "keep-alive"
 }foo
-<pre>
+</pre>
 
 <h2>Roadmap</h2>
 
+* Make auth a service call from gateway to auth, rather than a proxy.
+* Move token check into auth proxy so that all auth session logic is handled here... making gateway rely on auth completely.
 * Fix home grown parsing of cookies/basic auth.  Likely using Express framework.
 * Back LDAP with a user seed file, and offer a non-memory based alternative, ie backed by RIAK.
 * Move port and other config to a config file.
