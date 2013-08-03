@@ -2,22 +2,21 @@
 var express = require('express'),
     httpProxy = require('http-proxy'),
     http = require('http'),
-    ldap = require('ldapjs');
+    ldap = require('ldapjs'),
+    metrics = require('metrics');
 
-var numAuthRequests = 0;
-var numProxyRequests = 0;
-var numTargetRequests = 0;
+// servers and server metrics
+var GATEWAY_SERVER = { host: 'localhost', port: 8000 };
+var AUTH_SERVER = { host: 'localhost', port: 9001 };
+var TARGET_SERVER = { host: 'localhost', port: 9002 };
+var METRICS_SERVER = { host: 'localhost', port: 9003 };
 
-// utility functions
+var gatewayRequests = new metrics.Timer;
+var authRequests = new metrics.Timer;
+var targetRequests = new metrics.Timer;
 
-var start = process.hrtime();
 
-var elapsed_time = function(note){
-    var precision = 3; // 3 decimal places
-    var elapsed = process.hrtime(start)[1] / 1000000; // divide by a million to get nano to milli
-    console.log(process.hrtime(start)[0] + " s, " + elapsed.toFixed(precision) + " ms - " + note); // print message + time
-    //start = process.hrtime(); // reset the timer
-}
+// utility methods
 
 var fetchCookies = function(req) { 
   var cookies = {};
@@ -63,16 +62,15 @@ var authenticate = function(req, callback) {
 
 
 
+
+
 // 
-// Proxy server on 8000
+// Proxy (Gateway) server
 //
 
-var server = httpProxy.createServer(function (req, res, proxy) {
+httpProxy.createServer(function (req, res, proxy) {
 
-
-  elapsed_time("Total requests:  " + (numProxyRequests + numTargetRequests + numAuthRequests));
-
-  console.log("Total proxy requests:  " + ++numProxyRequests);
+  gatewayRequests.update(1);
 
   var cookies = fetchCookies(req);  
   
@@ -82,29 +80,26 @@ var server = httpProxy.createServer(function (req, res, proxy) {
     //console.log("Authenticated:  " + cookies['token']);
     
     // proxy requests to target
-    proxy.proxyRequest(req, res, { host: 'localhost', port: 9002 });
+    proxy.proxyRequest(req, res, TARGET_SERVER);
     
   } else {
     // console.log("Not authenticated, redirecting to auth server.");
     
     // proxy request to authentication server
-    proxy.proxyRequest(req, res, { host: 'localhost', port: 9001 });
+    proxy.proxyRequest(req, res, AUTH_SERVER);
     
   }
 
 
-});
-server.listen(8000);
+}).listen(GATEWAY_SERVER.port);
 
 
 //
-// Authentication server on port 9001
+// Authentication server
 //
 http.createServer(function (req, res) {
-  
-   console.log("Total auth requests:  " + ++numAuthRequests);
-  
-   var authenticated = null;
+
+    authRequests.update(1);
 
     authenticate(req, function(result) {
       console.log('result: ' + result);
@@ -120,20 +115,26 @@ http.createServer(function (req, res) {
         }
 
     });
-}).listen(9001);
+}).listen(AUTH_SERVER.port);
 
 
 //
-// Dummy target server on port 9002 (echo request)
+// Target server
 //
 http.createServer(function (req, res) {
 
+  targetRequests.update(1);
+
   res.writeHead(200, { 'Content-Type': 'text/plain' });
-
   res.write('Echo service: ' + req.url + '\n' + JSON.stringify(req.headers, true, 2));
-
+  res.write('\n');
   req.pipe(res);
-
-  //res.end();
+  res.end();
   
-}).listen(9002);
+}).listen(TARGET_SERVER.port);
+
+//
+// Metrics server
+//
+var metricsServer = new metrics.Server(METRICS_SERVER.port);
+metricsServer.addMetric('requestTimer', serviceRequestTimer);
