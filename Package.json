@@ -4,6 +4,7 @@
     "author": "Robert Christian <robertjchristian@gmail.com>",
     "dependencies": {
         "express": "3.3.x",
+        "metrics": "0.1.x",
         "http-proxy": "0.10.x",
         "ldapjs": "0.6.x"
     },
