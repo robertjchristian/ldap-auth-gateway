@@ -44,8 +44,7 @@ var authenticate = function(req, callback) {
         username=parts[0],
         password=parts[1];
 
-    console.log('User:  ' + username + ", Password:  " + password);
-
+    //console.log('User:  ' + username + ", Password:  " + password);
 
     client.bind('cn=' + username, password, function(err) {
 
@@ -53,7 +52,7 @@ var authenticate = function(req, callback) {
             console.log('Err:  ' + err.code);
             callback(false);
         }  else {
-            //client.unbind();
+            client.unbind();
             console.log('Authenticated against LDAP');
             callback( true);
         }
@@ -133,10 +132,12 @@ http.createServer(function (req, res) {
   
 }).listen(TARGET_SERVER.port);
 
+
 //
 // Metrics server
 //
-var metricsServer = new metrics.Server(METRICS_SERVER.port);
-metricsServer.addMetric('targetRequests', targetRequests);
-metricsServer.addMetric('authRequests', authRequests);
-metricsServer.addMetric('gatewayRequests', gatewayRequests);
+//targetRequests, metrics.Timer: authRequests, met: gatewayRequests}
+var options = {
+  'Metrics': {'targetRequests': targetRequests, 'authRequests': authRequests, 'gatewayRequests': gatewayRequests}
+}
+var metricsServer = new metrics.Server(METRICS_SERVER.port, options);
