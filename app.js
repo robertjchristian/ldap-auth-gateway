@@ -137,4 +137,6 @@ http.createServer(function (req, res) {
 // Metrics server
 //
 var metricsServer = new metrics.Server(METRICS_SERVER.port);
-metricsServer.addMetric('requestTimer', serviceRequestTimer);
+metricsServer.addMetric('targetRequests', targetRequests);
+metricsServer.addMetric('authRequests', authRequests);
+metricsServer.addMetric('gatewayRequests', gatewayRequests);
