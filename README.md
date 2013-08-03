@@ -1,5 +1,7 @@
 <h1>ldap-auth-gateway</h1>
 
+<b>Note: This is a minimum viable product... that said, it works!</b>
+
 <h2>about</h2>
 
 Provides a gateway pattern for centralizing the authorization and session management of incoming HTTP requests through a reverse proxy.  Authorization mechanism could be made pluggable since it is facaded by an auth service, but in the default implementation, I'm using a nodejs-based LDAP server (ldapjs).
@@ -81,26 +83,43 @@ attempt to access target via gateway, valid token
 
 <h2>Example usage<h2>
 
-<i>TODO:  Elaborate exampleusage with better documentation, and the below script actually won't work... make host configurable and change Basic auth to use "root"/"secret" as that's the only cred that will work out of the box.</i>
+Examples assume running on localhost....
 
-<h5>Examples - test.sh</h5>
+<h5>Use case:  Invalid basic auth, no existing session</h5>
+User attempts to access target through gateway with no session and no (or invalid) auth credentials.
 <pre>
-#!/bin/bash
-
-while true
-  do
-
-  printf "\n\nRequest target through proxy with valid session...\n"
-  curl -X POST -d "foofoofoo" --header "Cookie:  token=12345678" host:8000
-
-  printf "\n\nRequest target through proxy with invalid auth credentials...\n"
-  curl --header "Authorization:  Basic cm9iOnJvYg==" host:8000
-
-  printf "\n\nRequest target through proxy with invalid auth credentials...\n"
-  curl --header "Authorization:  Basic fail" host:8000
-
-  exit
-done  
-
+➜  ~  curl --header "Authorization:  Basic cm9iOnJvYg==" localhost:8000
+Not authorized.
 </pre>
 
+<h5>Use case:  Valid basic auth, no existing session</h5>
+User attempts to access target through gateway with no session and valid auth credentials (login: root, password: secret).
+<pre>
+➜  ~  curl --header "Authorization:  Basic cm9vdDpzZWNyZXQ=" localhost:8000
+Authorized.
+</pre>
+
+<h5>Use case:  User has a valid session after successful authorization</h5>
+Here, simple token is validated and forwarded to an echo service.  Not the x headers indicating the forward.  Note, roadmap item will include client-based secure sessions with TTL... likely via the Express Framework.
+<pre>
+➜  ~  curl -X POST -d "foo" --header "Cookie:  token=12345678" localhost:8000
+Echo service: /
+{
+  "user-agent": "curl/7.24.0 (x86_64-apple-darwin12.0) libcurl/7.24.0 OpenSSL/0.9.8x zlib/1.2.5",
+  "host": "localhost:8000",
+  "accept": "*/*",
+  "cookie": "token=12345678",
+  "content-length": "9",
+  "content-type": "application/x-www-form-urlencoded",
+  "x-forwarded-for": "127.0.0.1",
+  "x-forwarded-port": "52581",
+  "x-forwarded-proto": "http",
+  "connection": "keep-alive"
+}foo
+<pre>
+
+<h2>Roadmap</h2>
+
+* Fix home grown parsing of cookies/basic auth.  Likely using Express framework.
+* Back LDAP with a user seed file, and offer a non-memory based alternative, ie backed by RIAK.
+* Move port and other config to a config file.
