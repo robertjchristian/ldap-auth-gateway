@@ -3,6 +3,7 @@ var express = require('express'),
     httpProxy = require('http-proxy'),
     http = require('http'),
     ldap = require('ldapjs'),
+    url = require('url'),
     metrics = require('metrics');
 
 // servers and server metrics
@@ -18,14 +19,14 @@ var targetRequests = new metrics.Timer;
 
 // utility methods
 
-var fetchCookies = function(req) { 
-  var cookies = {};
-  // TODO use express or a known utils class for this
-  req.headers.cookie && req.headers.cookie.split(';').forEach(function( cookie ) {
-    var parts = cookie.split('=');
-    cookies[ parts[ 0 ].trim() ] = ( parts[ 1 ] || '' ).trim();
-  });
-  return cookies;
+var fetchCookies = function(req) {
+    var cookies = {};
+    // TODO use express or a known utils class for this
+    req.headers.cookie && req.headers.cookie.split(';').forEach(function( cookie ) {
+        var parts = cookie.split('=');
+        cookies[ parts[ 0 ].trim() ] = ( parts[ 1 ] || '' ).trim();
+    });
+    return cookies;
 }
 
 // ldap auth
@@ -61,33 +62,40 @@ var authenticate = function(req, callback) {
 
 
 
-
-
 // 
 // Proxy (Gateway) server
 //
 
 httpProxy.createServer(function (req, res, proxy) {
 
-  gatewayRequests.update(1);
+    gatewayRequests.update(1);
 
-  var cookies = fetchCookies(req);  
-  
-  //console.log(req.headers);
+    var cookies = fetchCookies(req);
 
-  if (cookies['token'] && cookies['token'] == '12345678') {
-    //console.log("Authenticated:  " + cookies['token']);
-    
-    // proxy requests to target
-    proxy.proxyRequest(req, res, TARGET_SERVER);
-    
-  } else {
-    // console.log("Not authenticated, redirecting to auth server.");
-    
-    // proxy request to authentication server
-    proxy.proxyRequest(req, res, AUTH_SERVER);
-    
-  }
+    //console.log(req.headers);
+
+    if (cookies['token'] && cookies['token'] == '12345678') {
+        //console.log("Authenticated:  " + cookies['token']);
+
+        // rewrite url to target:
+        // TODO provide a facility to map context, ie a in
+        // TODO "host:port/a/b/c/d",
+        // TODO to a host dynamically, and rewrite the url
+        // TODO ie if a maps to hostY and portZ, rewrite url as
+        // TODO "hostY:portZ/b/c/d"
+        // TODO ... see that the a is droped
+        req.url = "/foo";
+
+        // proxy requests to target
+        proxy.proxyRequest(req, res, TARGET_SERVER);
+
+    } else {
+        // console.log("Not authenticated, redirecting to auth server.");
+
+        // proxy request to authentication server
+        proxy.proxyRequest(req, res, AUTH_SERVER);
+
+    }
 
 
 }).listen(GATEWAY_SERVER.port);
@@ -101,7 +109,7 @@ http.createServer(function (req, res) {
     authRequests.update(1);
 
     authenticate(req, function(result) {
-      console.log('result: ' + result);
+        console.log('result: ' + result);
 
         if (!result) {
             res.writeHead(200, { 'Content-Type': 'text/plain', 'Set-Cookie': 'token=' });
@@ -122,14 +130,14 @@ http.createServer(function (req, res) {
 //
 http.createServer(function (req, res) {
 
-  targetRequests.update(1);
+    targetRequests.update(1);
 
-  res.writeHead(200, { 'Content-Type': 'text/plain' });
-  res.write('Echo service: ' + req.url + '\n' + JSON.stringify(req.headers, true, 2));
-  res.write('\n');
-  req.pipe(res);
-  res.end();
-  
+    res.writeHead(200, { 'Content-Type': 'text/plain' });
+    res.write('Echo service: ' + req.url + '\n' + JSON.stringify(req.headers, true, 2));
+    res.write('\n');
+    req.pipe(res);
+    res.end();
+
 }).listen(TARGET_SERVER.port);
 
 
@@ -138,6 +146,6 @@ http.createServer(function (req, res) {
 //
 //targetRequests, metrics.Timer: authRequests, met: gatewayRequests}
 var options = {
-  'Metrics': {'targetRequests': targetRequests, 'authRequests': authRequests, 'gatewayRequests': gatewayRequests}
+    'Metrics': {'targetRequests': targetRequests, 'authRequests': authRequests, 'gatewayRequests': gatewayRequests}
 }
 var metricsServer = new metrics.Server(METRICS_SERVER.port, options);

@@ -142,3 +142,4 @@ Echo service: /
 * Fix home grown parsing of cookies/basic auth.  Likely using Express framework.
 * Back LDAP with a user seed file, and offer a non-memory based alternative, ie backed by RIAK.
 * Move port and other config to a config file.
+* Metrics server falls down on heavy load
